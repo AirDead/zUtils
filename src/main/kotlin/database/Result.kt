@@ -1,4 +1,4 @@
-package database
+package me.airdead.zutils.database
 
 enum class Result(val code: Int) {
     UNKNOWN(-1),

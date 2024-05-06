@@ -4,7 +4,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "ru.airdead.zutils"
+group = "me.airdead.zutils"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -12,16 +12,15 @@ repositories {
 }
 
 dependencies {
+    // testImplementation(kotlin("test"))
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation(kotlin("stdlib"))
 }
 
 tasks.test {
     useJUnitPlatform()
 }
-
 kotlin {
     jvmToolchain(17)
 }

@@ -1,4 +1,4 @@
-package database
+package me.airdead.zutils.database
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
