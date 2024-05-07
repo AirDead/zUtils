@@ -1,33 +1,36 @@
 package me.airdead.zutils
 
-fun String.formatPlaceholders(map: Map<String, Any>) = replaceClassPlaceholders(map)
+fun String.formatWithMap(map: Map<String, Any>): String {
+    val p = Regex("\\{([\\w.]+)\\}")
+    val result = StringBuffer()
+    val m = p.toPattern().matcher(this)
 
-private fun String.replaceClassPlaceholders(map: Map<String, Any>): String {
-    val pattern = Regex("\\{([\\w.]+)\\}")
-    return pattern.replace(this) { matchResult ->
-        val fullPath = matchResult.groupValues[1]
-        val pathParts = fullPath.split(".")
-        val className = pathParts.first()
-        map[className]?.let { instance ->
-            safelyGetValue(instance, pathParts.drop(1))?.toString()
-        } ?: matchResult.value
+    fun findByPath(instance: Any?, pathParts: List<String>): Any? {
+        if (instance == null || pathParts.isEmpty()) return instance
+        val fieldName = pathParts.first()
+        return try {
+            val field = instance::class.java.getDeclaredField(fieldName)
+            field.isAccessible = true
+            val nextInstance = field[instance]
+            findByPath(nextInstance, pathParts.drop(1))
+        } catch (e: Exception) {
+            // If field not found, return null
+            null
+        }
     }
-}
 
-private fun safelyGetValue(instance: Any?, pathParts: List<String>) = try {
-    pathParts.fold(instance) { currentInstance, part ->
-        currentInstance?.getFieldValue(part)
+    while (m.find()) {
+        val fullPath = m.group(1)
+        if (fullPath != null) {
+            val pathParts = fullPath.split(".")
+            val className = pathParts.first()
+            val value = map[className]?.let { instance ->
+                findByPath(instance, pathParts.drop(1))
+            } ?: m.group()
+
+            m.appendReplacement(result, value.toString())
+        }
     }
-} catch (e: Exception) {
-    e.printStackTrace()
-    null
-}
-
-private fun Any?.getFieldValue(fieldName: String) = if (this == null) null else try {
-    val field = this::class.java.getDeclaredField(fieldName)
-    field.isAccessible = true
-    field[this]?.toString()
-} catch (e: Exception) {
-    println("Error accessing field $fieldName: ${e.message}")
-    null
+    m.appendTail(result)
+    return result.toString()
 }
