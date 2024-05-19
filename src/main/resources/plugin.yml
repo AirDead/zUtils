@@ -1,8 +1,0 @@
-name: MmoRaces
-version: 1.0
-main: ru.airdead.zutils.Main
-api-version: '1.20'
-commands:
-  test:
-    description: "Send explosion packet"
-    usage: "/test"
