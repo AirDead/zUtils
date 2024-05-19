@@ -13,7 +13,8 @@ repositories {
 
 dependencies {
     // testImplementation(kotlin("test"))
-    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }
